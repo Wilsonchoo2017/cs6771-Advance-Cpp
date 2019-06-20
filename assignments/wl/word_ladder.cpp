@@ -8,7 +8,7 @@
  */
 ListOfString FindLadder(std::string const& start_word,
                         std::string const& end_word,
-                        std::unordered_set<std::string>& dict) {
+                        std::unordered_set<std::string>const& dict) {
   ListOfString solution_ladder;
 
   // Have an early exit when start and end word are identical
@@ -19,9 +19,9 @@ ListOfString FindLadder(std::string const& start_word,
 
   // Initialise queue and visited
   std::queue<std::string> queue;
-  queue.push(start_word);  // Enqueue starting point
+  queue.push(start_word);
   std::unordered_map<std::string, WordNode*> visited;
-  visited.emplace(start_word, new WordNode(0, start_word));  // Add start point into visited
+  visited.emplace(start_word, new WordNode(0, start_word));
 
   while (!queue.empty()) {
     // Dequeue
@@ -37,7 +37,6 @@ ListOfString FindLadder(std::string const& start_word,
       // Thus we can now find all the paths that is connected to the start word.
       std::deque<std::string> subqueue;
       subqueue.emplace_back(end_word);
-      // get end_node
       GetAllLadder(solution_ladder, subqueue, curr_word_node);
       return solution_ladder;
     }
@@ -48,17 +47,16 @@ ListOfString FindLadder(std::string const& start_word,
       auto og_letter_it = letter_it;
       // setup variables for loop
       for (auto char_it = 'a'; char_it <= 'z'; char_it++) {
-        if (char_it == og_letter_it)
-          continue;  // Skip if letter is the same
+        if (char_it == og_letter_it) continue;
         letter_it = char_it;
         if (dict.find(curr_word) != dict.end()) {
           // word found in the dictionary
           auto node_it = visited.find(curr_word);
           if (node_it != visited.end()) {
-            // string has been visited
+            // String has been visited
             WordNode* node = node_it->second;
             if (node->hopped == curr_level + 1) {
-              // valid paths we add the parent node into this node previous
+              // Valid paths we add the parent node into this node previous
               node->previous_word_nodes.push_back(curr_word_node);
             }  // else skip as not a valid path
           } else {
@@ -81,15 +79,9 @@ ListOfString FindLadder(std::string const& start_word,
 // https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
 void GetAllLadder(ListOfString& solution_ladder,
                   std::deque<std::string>& subqueue,
-                  WordNode* curr_node) {
-  // Create base case for recursion
-  if (curr_node == nullptr) {
-    std::vector<std::string> sublist(subqueue.begin(), subqueue.end());
-    solution_ladder.emplace_back(sublist);
-    return;
-  }
-
+                  WordNode* const curr_node) {
   std::vector<WordNode*> previous_words = curr_node->previous_word_nodes;
+
   // The Recursion
   if (!previous_words.empty()) {
     for (const auto& word_node : previous_words) {
@@ -98,6 +90,9 @@ void GetAllLadder(ListOfString& solution_ladder,
       subqueue.pop_front();  // Revert to allow the next word construct a path
     }
   } else {
-    GetAllLadder(solution_ladder, subqueue, nullptr);
+    // Base Case
+    std::vector<std::string> sublist(subqueue.begin(), subqueue.end());
+    solution_ladder.emplace_back(sublist);
+    return;
   }
 }
