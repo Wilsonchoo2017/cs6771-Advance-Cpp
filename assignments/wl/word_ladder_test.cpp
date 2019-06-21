@@ -8,11 +8,14 @@
 
 */
 
+#include <algorithm>
+#include <set>
+#include <string>
+#include <unordered_set>
+#include <vector>
+
 #include "assignments/wl/word_ladder.h"
 #include "catch.h"
-#include <set>
-
-
 
 // White Box Testing
 SCENARIO("Simple Test 1: simply runs the program that has the only 2 and 3 nodes solution.") {
@@ -26,7 +29,7 @@ SCENARIO("Simple Test 1: simply runs the program that has the only 2 and 3 nodes
       REQUIRE(solution == referenced_solution);
     }
     GIVEN("An additional node into the dictionary") {
-     lexicon.insert("con");
+      lexicon.insert("con");
       WHEN("Find Ladder is called it should return 3 nodes") {
         auto solution = FindLadder("cat", "con", lexicon);
         ListOfString referenced_solution = {{"cat", "can", "con"}};
@@ -34,8 +37,6 @@ SCENARIO("Simple Test 1: simply runs the program that has the only 2 and 3 nodes
       }
     }
   }
-
-
 }
 
 SCENARIO("Test 2: Cycle Check and Multi Path Solutions Check") {
@@ -47,9 +48,7 @@ SCENARIO("Test 2: Cycle Check and Multi Path Solutions Check") {
     WHEN("Find Ladder is called") {
       auto solution = FindLadder("cat", "con", lexicon);
       ListOfString referenced_solution = {{"cat", "cot", "con"}};
-      THEN("it should return 1 path with 3 nodes") {
-        REQUIRE(solution == referenced_solution);
-      }
+      THEN("it should return 1 path with 3 nodes") { REQUIRE(solution == referenced_solution); }
     }
     GIVEN("Additional words that causes 2 paths to occur") {
       lexicon.insert("can");
@@ -57,9 +56,7 @@ SCENARIO("Test 2: Cycle Check and Multi Path Solutions Check") {
         auto solution = FindLadder("cat", "con", lexicon);
         std::sort(solution.begin(), solution.end());
         ListOfString referenced_solution = {{"cat", "can", "con"}, {"cat", "cot", "con"}};
-        THEN("it should return 2 path with 3 nodes"){
-          REQUIRE(solution == referenced_solution);
-        }
+        THEN("it should return 2 path with 3 nodes") { REQUIRE(solution == referenced_solution); }
       }
     }
   }
@@ -69,7 +66,8 @@ SCENARIO("Test 3: Correctness in populated dictionary to check whether it will i
          "words") {
   GIVEN("A populated Dictioanry") {
     std::unordered_set<std::string> lexicon;
-    std::vector<std::string> relevant_data({"cat", "cot", "cog", "bog", "bat", "con", "can", "cam"});
+    std::vector<std::string> relevant_data(
+        {"cat", "cot", "cog", "bog", "bat", "con", "can", "cam"});
     lexicon.insert(relevant_data.begin(), relevant_data.end());
     std::vector<std::string> junk_data({"aa", "bb", "cc", "eeee", "zzzz", "aese", "fdae"});
     lexicon.insert(junk_data.begin(), junk_data.end());
@@ -78,14 +76,7 @@ SCENARIO("Test 3: Correctness in populated dictionary to check whether it will i
       auto solution = FindLadder("cat", "con", lexicon);
       std::sort(solution.begin(), solution.end());
       ListOfString referenced_solution = {{"cat", "can", "con"}, {"cat", "cot", "con"}};
-      THEN("it should return 2 path with 3 nodes") {
-        REQUIRE(solution == referenced_solution);
-      }
+      THEN("it should return 2 path with 3 nodes") { REQUIRE(solution == referenced_solution); }
     }
   }
 }
-
-
-
-
-

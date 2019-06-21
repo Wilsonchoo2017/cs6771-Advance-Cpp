@@ -1,11 +1,11 @@
-#include "assignments/wl/lexicon.h"
-#include "assignments/wl/word_ladder.h"
-
 #include <algorithm>
 #include <string>
 #include <vector>
 
-void PrintResult(std::vector<std::vector<std::string>>&);
+#include "assignments/wl/lexicon.h"
+#include "assignments/wl/word_ladder.h"
+
+void PrintResult(ListOfString&);
 
 int main() {
   auto lexicon = GetLexicon("assignments/wl/words.txt");  // lexicon = unordered set
@@ -26,8 +26,8 @@ int main() {
   }
 
   // Convert all input to lower case
-//  std::transform(start_word.begin(), start_word.end(), start_word.begin(), ::tolower);
-//  std::transform(end_word.begin(), end_word.end(), end_word.begin(), ::tolower);
+  //  std::transform(start_word.begin(), start_word.end(), start_word.begin(), ::tolower);
+  //  std::transform(end_word.begin(), end_word.end(), end_word.begin(), ::tolower);
 
   // Check that start and end word exist in lexicon
   if (lexicon.find(start_word) == lexicon.end() || lexicon.find(end_word) == lexicon.end()) {
@@ -35,7 +35,6 @@ int main() {
     std::cout << "No ladder found.\n";
     return 0;
   }
-
 
   ListOfString solution = FindLadder(start_word, end_word, lexicon);
 

@@ -1,5 +1,14 @@
 #include "assignments/wl/word_ladder.h"
 
+#include <algorithm>
+#include <deque>
+#include <iostream>
+#include <queue>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
 /*
  * Precondition: start and end word exists in lexicon.
  * PostCondition: return empty vector if no ladder is found. Otherwise return an unsorted ladder
@@ -8,7 +17,7 @@
  */
 ListOfString FindLadder(std::string const& start_word,
                         std::string const& end_word,
-                        std::unordered_set<std::string>const& dict) {
+                        std::unordered_set<std::string> const& dict) {
   ListOfString solution_ladder;
 
   // Have an early exit when start and end word are identical
@@ -47,7 +56,8 @@ ListOfString FindLadder(std::string const& start_word,
       auto og_letter_it = letter_it;
       // setup variables for loop
       for (auto char_it = 'a'; char_it <= 'z'; char_it++) {
-        if (char_it == og_letter_it) continue;
+        if (char_it == og_letter_it)
+          continue;
         letter_it = char_it;
         if (dict.find(curr_word) != dict.end()) {
           // word found in the dictionary
@@ -75,7 +85,7 @@ ListOfString FindLadder(std::string const& start_word,
   return solution_ladder;  // Empty ListOfString
 }
 
-// Uses DFS
+// Uses DFS to find all paths to origin nodes.
 // https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
 void GetAllLadder(ListOfString& solution_ladder,
                   std::deque<std::string>& subqueue,
