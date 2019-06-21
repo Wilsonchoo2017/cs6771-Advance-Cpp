@@ -15,9 +15,9 @@ using ListOfString = std::vector<std::vector<std::string>>;
 struct WordNode
 {
   int hopped;
-  std::string word;
+  std::string_view word;
   std::vector<WordNode *> previous_word_nodes;
-  WordNode (int hopped, std::string word): hopped(hopped), word(std::move(word)) {};// constructor
+  WordNode (int hopped, std::string_view word): hopped(hopped), word(word) {};// constructor
 };
 
 ListOfString FindLadder(std::string const &, std::string const &,
