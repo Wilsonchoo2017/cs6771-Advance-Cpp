@@ -2,6 +2,7 @@
 #define ASSIGNMENTS_WL_WORD_LADDER_H_
 
 #include <deque>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
