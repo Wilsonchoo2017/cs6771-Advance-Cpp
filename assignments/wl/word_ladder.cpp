@@ -72,7 +72,7 @@ ListOfString FindLadder(std::string const& start_word,
           } else {
             // string has not been visited, we creat and add it into our visited, enqueue it and
             // add it to the parent node  into this node previous
-            WordNode* new_word_node = new WordNode(curr_level + 1, curr_word);
+            auto *new_word_node = new WordNode(curr_level + 1, curr_word);
             new_word_node->previous_word_nodes.emplace_back(curr_word_node);
             visited.emplace(curr_word, new_word_node);
             queue.push(curr_word);
