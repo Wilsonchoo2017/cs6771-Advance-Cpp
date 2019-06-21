@@ -2,7 +2,7 @@
 
 /*
  * Precondition: start and end word exists in lexicon.
- * PostCondition: return empty vector if no ladder is found. Otherwise return ladder
+ * PostCondition: return empty vector if no ladder is found. Otherwise return an unsorted ladder
  * Uses BFS to find the relationship of words. Once end_word is found, we call FindAllPaths to
  * construct our solution and return it.
  */
