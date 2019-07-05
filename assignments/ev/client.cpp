@@ -1,6 +1,6 @@
 #include <iostream>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include "assignments/ev/euclidean_vector.h"
 
@@ -35,9 +35,6 @@ int main() {
   std::cout << g << '\n';
   std::cout << f << '\n';
 
-  EuclideanVector zero(0);
-  std::cout << zero.at(0) << '\n';
-
   // try operator overloading
   e += d;
   std::cout << e << '\n';
@@ -69,4 +66,3 @@ int main() {
     std::cout << d << '\n';
   }
 }
-
