@@ -1,0 +1,19 @@
+What is the difference between each kind of iterator?
+
+    Input iterator
+    Output iterator
+    Forward iterator
+    Bidirectional iterator
+    Random-access iterator
+
+
+for input iterator, you only are receiving that means you can read access and compare them. not write
+for output itreator, you can only read to and cant read, access
+
+both of these iterator can be iterated forward, but we cant go back and save  the previous result somewhere i guess
+
+forward means you can only move forward
+
+
+
+input cannot make multiple passes w

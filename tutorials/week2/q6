@@ -1,0 +1,27 @@
+What kind of iterator is each of the following (and are the iterators const)?
+Which of these will compile, and which of these will not?
+Note: std::list is a doubly linked list, and std::forward_list is a singly linked list.
+
+
+````
+const std::vector<int> vec;    //const vec, = cant change what is inside but can add value into it
+std::list<int> li; //double linked list
+std::forward_list<double> forward_li; //forward linked list
+std::string s;
+
+vec.begin(); //yes
+vec.cbegin(); // yes
+(*vec.begin())++; //yes /////NO BECAUSE Attempt to access a const iterator, you can lonly iterate them
+li.cbegin(); //yes
+li.rbegin(); // eys
+forward_li.cbegin(); //yes
+(*forward_li.cbegin())++; //yes /////NO BECAUSE same as above
+forward_li.crbegin();//no
+s.begin(); // yes
+std::back_inserter(vec); /yes Compiles. Can't invoke the dereference operator to insert anything because you get a compile time error.
+std::back_inserter(li); //yes
+std::istream_iterator<int>(std::cin); //yes
+std::ostream_iterator<int>(std::cout, " "); //yes
+
+
+````

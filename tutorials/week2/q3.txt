@@ -1,0 +1,2 @@
+no definition of what the list is storing
+accessing the list seems weird because a list is forward iterator meaning accessing the medium is very slow
