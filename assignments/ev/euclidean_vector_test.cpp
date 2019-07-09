@@ -11,4 +11,17 @@
 #include "assignments/ev/euclidean_vector.h"
 #include "catch.h"
 
-// TODO(students): Fill this in.
+
+// ====== Constructor Test ========
+SCENARIO("Testing Constructor") {
+  GIVEN("some default constructor") {
+    EuclideanVector a(1);
+    EuclideanVector b(4);
+    EuclideanVector c(100);
+    THEN("All the Dimension should set appropriately and magnitude inside should be 0.0") {
+      REQUIRE(a.dimen == 0);
+      REQUIRE(a.);
+    }
+  }
+}
+
