@@ -36,14 +36,6 @@ dimension_{v.dimension_}, magnitudes_{std::move(v.magnitudes_)} {
     v.dimension_ = 0;
 }
 
-std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
-  os << '[';
-  for (int i = 0; i < v.dimension_; i++) {
-    os << ' ' << v.magnitudes_[i];
-  }
-  os << " ]" << '\n';
-  return os;
-}
 
 EuclideanVector& EuclideanVector::operator=(const EuclideanVector& v) noexcept {
   dimension_ = v.dimension_;
@@ -155,4 +147,6 @@ EuclideanVector EuclideanVector::CreateUnitVector() const {
   }
   return v;
 }
+
+
 
