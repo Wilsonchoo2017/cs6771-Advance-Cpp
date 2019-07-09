@@ -49,7 +49,6 @@ int main() {
   // try operator overloading
   e += d;
   std::cout << e << '\n';
-/*
   EuclideanVector h = e - g;
   std::cout << h << '\n';
 
@@ -76,5 +75,4 @@ int main() {
   for (auto d : lj) {
     std::cout << d << '\n';
   }
-  */
 }

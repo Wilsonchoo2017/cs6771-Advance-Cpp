@@ -1,14 +1,15 @@
 #include "assignments/ev/euclidean_vector.h"
 
-#include <assert.h>
 #include <algorithm>  // Look at these - they are helpful https://en.cppreference.com/w/cpp/algorithm
+#include <assert.h>
 #include <cmath>
 #include <exception>
 #include <iterator>
 #include <list>
 #include <vector>
 
-EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept : dimension_{n_dimension} {
+EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept
+  : dimension_{n_dimension} {
   magnitudes_ = std::make_unique<double[]>(n_dimension);
   for (int i = 0; i < n_dimension; ++i) {
     magnitudes_[i] = magnitude;
@@ -16,7 +17,7 @@ EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept : d
 }
 
 EuclideanVector::EuclideanVector(std::vector<double>::const_iterator start,
-    std::vector<double>::const_iterator end) noexcept {
+                                 std::vector<double>::const_iterator end) noexcept {
   dimension_ = std::distance(start, end);
   magnitudes_ = std::make_unique<double[]>(dimension_);
   for (int i = 0; start != end; ++start, ++i) {
@@ -24,7 +25,7 @@ EuclideanVector::EuclideanVector(std::vector<double>::const_iterator start,
   }
 }
 
-EuclideanVector::EuclideanVector(const EuclideanVector & v) noexcept {
+EuclideanVector::EuclideanVector(const EuclideanVector& v) noexcept {
   dimension_ = v.dimension_;
   magnitudes_ = std::make_unique<double[]>(dimension_);
   for (int i = 0; i < dimension_; ++i) {
@@ -32,11 +33,10 @@ EuclideanVector::EuclideanVector(const EuclideanVector & v) noexcept {
   }
 }
 
-EuclideanVector::EuclideanVector(EuclideanVector&& v) noexcept :
-dimension_{v.dimension_}, magnitudes_{std::move(v.magnitudes_)} {
-    v.dimension_ = 0;
+EuclideanVector::EuclideanVector(EuclideanVector&& v) noexcept
+  : dimension_{v.dimension_}, magnitudes_{std::move(v.magnitudes_)} {
+  v.dimension_ = 0;
 }
-
 
 EuclideanVector& EuclideanVector::operator=(const EuclideanVector& v) noexcept {
   dimension_ = v.dimension_;
@@ -49,7 +49,7 @@ EuclideanVector& EuclideanVector::operator=(const EuclideanVector& v) noexcept {
 
 EuclideanVector& EuclideanVector::operator=(EuclideanVector&& v) noexcept {
   dimension_ = v.dimension_;
-  v.dimension_ = 0; // Clean up
+  v.dimension_ = 0;  // Clean up
   magnitudes_ = std::move(v.magnitudes_);
   return *this;
 }
@@ -65,7 +65,7 @@ double EuclideanVector::operator[](int i) const noexcept {
 }
 
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& v) {
-  if (this->dimension_!= v.dimension_) {
+  if (this->dimension_ != v.dimension_) {
     throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
   }
   for (int i = 0; i < dimension_; ++i) {
@@ -75,7 +75,7 @@ EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& v) {
 }
 
 EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& v) {
-  if (this->dimension_!= v.dimension_) {
+  if (this->dimension_ != v.dimension_) {
     throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
   }
   for (int i = 0; i < dimension_; ++i) {
@@ -101,7 +101,6 @@ EuclideanVector& EuclideanVector::operator/=(const double num) {
   return *this;
 }
 
-
 EuclideanVector::operator std::vector<double>() const noexcept {
   std::vector<double> vec;
   vec.reserve(dimension_);
@@ -119,14 +118,12 @@ EuclideanVector::operator std::list<double>() const noexcept {
   return lst;
 }
 
-
 double EuclideanVector::at(int i) const {
   if (i < 0 || i >= dimension_) {
     throw EuclideanVectorError("Index X is not valid for this EuclideanVector object");
   }
   return magnitudes_[i];
 }
-
 
 double& EuclideanVector::at(int i) {
   if (i < 0 || i >= dimension_) {
@@ -150,12 +147,10 @@ double EuclideanVector::GetEuclideanNorm() const {
   return std::sqrt(result);
 }
 
-
 EuclideanVector EuclideanVector::CreateUnitVector() const {
   if (dimension_ == 0) {
     throw EuclideanVectorError("EuclideanVector with no dimensions does not have a unit vector");
   }
-
 
   if (this->GetEuclideanNorm() == 0) {
     throw EuclideanVectorError("EuclideanVector with euclidean normal of 0 does not have a "
@@ -169,6 +164,3 @@ EuclideanVector EuclideanVector::CreateUnitVector() const {
   }
   return v;
 }
-
-
-

@@ -11,7 +11,8 @@
 class EuclideanVectorError : public std::exception {
  public:
   explicit EuclideanVectorError(const std::string& what) : what_(what) {}
-  const char* what() const noexcept{ return what_.c_str(); }
+  const char* what() const noexcept { return what_.c_str(); }
+
  private:
   std::string what_;
 };
@@ -48,7 +49,6 @@ class EuclideanVector {
   double GetEuclideanNorm() const;
   EuclideanVector CreateUnitVector() const;
 
-
   // Friends methods
   friend bool operator==(const EuclideanVector&, const EuclideanVector&) noexcept;
   friend bool operator!=(const EuclideanVector&, const EuclideanVector&) noexcept;
@@ -63,99 +63,96 @@ class EuclideanVector {
  private:
   int dimension_;
   std::unique_ptr<double[]> magnitudes_;
-};
 
-// ======= Definition of Friend functions ========
+  // ======= Definition of Friend functions ========
 
-bool operator==(const EuclideanVector& vec1, const EuclideanVector& vec2) noexcept {
-  if (vec1.dimension_!= vec2.dimension_) {
-    return false;
-  }
-
-  for (int i = 0; i < vec1.dimension_; ++i) {
-    if (vec1.magnitudes_[i] != vec2.magnitudes_[i]) {
+  friend bool operator==(const EuclideanVector& vec1, const EuclideanVector& vec2) noexcept {
+    if (vec1.dimension_ != vec2.dimension_) {
       return false;
     }
+
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      if (vec1.magnitudes_[i] != vec2.magnitudes_[i]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
-  return true;
-}
-
-bool operator!=(const EuclideanVector& vec1, const EuclideanVector& vec2) noexcept {
-  return !(vec1 == vec2);
-}
-
-EuclideanVector operator+(const EuclideanVector& vec1, const EuclideanVector& vec2) {
-  if (vec1.dimension_!= vec2.dimension_) {
-    throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+  friend bool operator!=(const EuclideanVector& vec1, const EuclideanVector& vec2) noexcept {
+    return !(vec1 == vec2);
   }
-  std::vector<double> tmp;
-  tmp.reserve(vec1.dimension_);
-  for (int i = 0; i < vec1.dimension_; ++i) {
-    tmp.push_back(vec1.magnitudes_[i] + vec2.magnitudes_[i]);
+
+  friend EuclideanVector operator+(const EuclideanVector& vec1, const EuclideanVector& vec2) {
+    if (vec1.dimension_ != vec2.dimension_) {
+      throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+    }
+    std::vector<double> tmp;
+    tmp.reserve(vec1.dimension_);
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      tmp.push_back(vec1.magnitudes_[i] + vec2.magnitudes_[i]);
+    }
+    return EuclideanVector(tmp.begin(), tmp.end());
   }
-  return EuclideanVector(tmp.begin(), tmp.end());
-}
 
-
-EuclideanVector operator-(const EuclideanVector& vec1, const EuclideanVector& vec2) {
-  if (vec1.dimension_!= vec2.dimension_) {
-    throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+  friend EuclideanVector operator-(const EuclideanVector& vec1, const EuclideanVector& vec2) {
+    if (vec1.dimension_ != vec2.dimension_) {
+      throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+    }
+    std::vector<double> tmp;
+    tmp.reserve(vec1.dimension_);
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      tmp.push_back(vec1.magnitudes_[i] - vec2.magnitudes_[i]);
+    }
+    return EuclideanVector(tmp.begin(), tmp.end());
   }
-  std::vector<double> tmp;
-  tmp.reserve(vec1.dimension_);
-  for (int i = 0; i < vec1.dimension_; ++i) {
-    tmp.push_back(vec1.magnitudes_[i] - vec2.magnitudes_[i]);
+
+  // Dot Product
+  friend double operator*(const EuclideanVector& vec1, const EuclideanVector& vec2) {
+    if (vec2.dimension_ == 0) {
+      throw EuclideanVectorError("Invalid vector division by 0");
+    }
+    std::vector<double> tmp;
+    tmp.reserve(vec1.dimension_);
+    double result = 0;
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      result = result + (vec1.magnitudes_[i] + vec2.magnitudes_[i]);
+    }
+    return result;
   }
-  return EuclideanVector(tmp.begin(), tmp.end());
-}
 
-// Dot Product
-double operator*(const EuclideanVector& vec1, const EuclideanVector& vec2) {
-  // Todo Add Exception
-  if (vec2.dimension_ == 0) {
-    throw EuclideanVectorError("Invalid vector division by 0");
+  friend EuclideanVector operator*(const EuclideanVector& vec1, double num) noexcept {
+    std::vector<double> tmp;
+    tmp.reserve(vec1.dimension_);
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      tmp.push_back(vec1.magnitudes_[i] * num);
+    }
+    return EuclideanVector(tmp.begin(), tmp.end());
   }
-  std::vector<double> tmp;
-  tmp.reserve(vec1.dimension_);
-  double result = 0;
-  for (int i = 0; i < vec1.dimension_; ++i) {
-    result = result + (vec1.magnitudes_[i] + vec2.magnitudes_[i]);
+
+  friend EuclideanVector operator*(double num, const EuclideanVector& vec1) noexcept {
+    return vec1 * num;
   }
-  return result;
-}
 
-EuclideanVector operator*(const EuclideanVector& vec1, double num) noexcept {
-  std::vector<double> tmp;
-  tmp.reserve(vec1.dimension_);
-  for (int i = 0; i < vec1.dimension_; ++i) {
-    tmp.push_back(vec1.magnitudes_[i] * num);
+  friend EuclideanVector operator/(const EuclideanVector& vec1, double num) {
+    // Throw Exception
+    std::vector<double> tmp;
+    tmp.reserve(vec1.dimension_);
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      tmp.push_back(vec1.magnitudes_[i] / num);
+    }
+    return EuclideanVector(tmp.begin(), tmp.end());
   }
-  return EuclideanVector(tmp.begin(), tmp.end());
-}
 
-EuclideanVector operator*(double num, const EuclideanVector& vec1) noexcept {
-  return vec1 * num;
-}
-
-EuclideanVector operator/(const EuclideanVector& vec1, double num) {
-  // Throw Exception
- std::vector<double> tmp;
-  tmp.reserve(vec1.dimension_);
-  for (int i = 0; i < vec1.dimension_; ++i) {
-    tmp.push_back(vec1.magnitudes_[i] / num);
+  friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
+    os << '[';
+    for (int i = 0; i < v.dimension_; i++) {
+      os << ' ' << v.magnitudes_[i];
+    }
+    os << " ]" << '\n';
+    return os;
   }
-  return EuclideanVector(tmp.begin(), tmp.end());}
+};
 
-std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
-  os << '[';
-  for (int i = 0; i < v.dimension_; i++) {
-    os << ' ' << v.magnitudes_[i];
-  }
-  os << " ]" << '\n';
-  return os;
-}
-
-
-// Todo methods that do not throw expcetion mark it as noexcept
-#endif // ASSIGNMENTS_EV_EUCLIDEAN_VECTOR_H_
+#endif  // ASSIGNMENTS_EV_EUCLIDEAN_VECTOR_H_
