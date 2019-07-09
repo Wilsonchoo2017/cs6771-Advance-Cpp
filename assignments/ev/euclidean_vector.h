@@ -86,7 +86,9 @@ bool operator!=(const EuclideanVector& vec1, const EuclideanVector& vec2) noexce
 }
 
 EuclideanVector operator+(const EuclideanVector& vec1, const EuclideanVector& vec2) {
-  //TODO throw exception
+  if (vec1.dimension_!= vec2.dimension_) {
+    throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+  }
   std::vector<double> tmp;
   tmp.reserve(vec1.dimension_);
   for (int i = 0; i < vec1.dimension_; ++i) {
@@ -97,7 +99,9 @@ EuclideanVector operator+(const EuclideanVector& vec1, const EuclideanVector& ve
 
 
 EuclideanVector operator-(const EuclideanVector& vec1, const EuclideanVector& vec2) {
-  //TODO throw exception
+  if (vec1.dimension_!= vec2.dimension_) {
+    throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+  }
   std::vector<double> tmp;
   tmp.reserve(vec1.dimension_);
   for (int i = 0; i < vec1.dimension_; ++i) {
@@ -109,13 +113,16 @@ EuclideanVector operator-(const EuclideanVector& vec1, const EuclideanVector& ve
 // Dot Product
 double operator*(const EuclideanVector& vec1, const EuclideanVector& vec2) {
   // Todo Add Exception
+  if (vec2.dimension_ == 0) {
+    throw EuclideanVectorError("Invalid vector division by 0");
+  }
   std::vector<double> tmp;
   tmp.reserve(vec1.dimension_);
   double result = 0;
   for (int i = 0; i < vec1.dimension_; ++i) {
     result = result + (vec1.magnitudes_[i] + vec2.magnitudes_[i]);
   }
-  return ;
+  return result;
 }
 
 EuclideanVector operator*(const EuclideanVector& vec1, double num) noexcept {

@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <algorithm>  // Look at these - they are helpful https://en.cppreference.com/w/cpp/algorithm
 #include <cmath>
+#include <exception>
 #include <iterator>
 #include <list>
 #include <vector>
@@ -64,7 +65,9 @@ double EuclideanVector::operator[](int i) const noexcept {
 }
 
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& v) {
-  // ToDo Throw Exception
+  if (this->dimension_!= v.dimension_) {
+    throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+  }
   for (int i = 0; i < dimension_; ++i) {
     magnitudes_[i] += v.magnitudes_[i];
   }
@@ -72,7 +75,9 @@ EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& v) {
 }
 
 EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& v) {
-  // ToDo Throw Exception
+  if (this->dimension_!= v.dimension_) {
+    throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
+  }
   for (int i = 0; i < dimension_; ++i) {
     magnitudes_[i] += v.magnitudes_[i];
   }
@@ -87,7 +92,9 @@ EuclideanVector& EuclideanVector::operator*=(const double num) noexcept {
 }
 
 EuclideanVector& EuclideanVector::operator/=(const double num) {
-  // ToDo Throw Exception
+  if (num == 0) {
+    throw EuclideanVectorError("Invalid vector division by 0");
+  }
   for (int i = 0; i < dimension_; ++i) {
     magnitudes_[i] /= num;
   }
@@ -114,13 +121,17 @@ EuclideanVector::operator std::list<double>() const noexcept {
 
 
 double EuclideanVector::at(int i) const {
-  // Todo Throw Exception
+  if (i < 0 || i >= dimension_) {
+    throw EuclideanVectorError("Index X is not valid for this EuclideanVector object");
+  }
   return magnitudes_[i];
 }
 
 
 double& EuclideanVector::at(int i) {
-  // Todo Throw Exception
+  if (i < 0 || i >= dimension_) {
+    throw EuclideanVectorError("Index X is not valid for this EuclideanVector object");
+  }
   return magnitudes_[i];
 }
 
@@ -129,7 +140,9 @@ int EuclideanVector::GetNumDimensions() const noexcept {
 }
 
 double EuclideanVector::GetEuclideanNorm() const {
-  // Todo Throw Exception
+  if (dimension_ == 0) {
+    throw EuclideanVectorError("EuclideanVector with no dimensions does not have a norm");
+  }
   double result = 0;
   for (int i = 0; i < dimension_; ++i) {
     result += std::pow(magnitudes_[i], 2.0);
@@ -139,7 +152,16 @@ double EuclideanVector::GetEuclideanNorm() const {
 
 
 EuclideanVector EuclideanVector::CreateUnitVector() const {
-  // Todo Throw Exception
+  if (dimension_ == 0) {
+    throw EuclideanVectorError("EuclideanVector with no dimensions does not have a unit vector");
+  }
+
+
+  if (this->GetEuclideanNorm() == 0) {
+    throw EuclideanVectorError("EuclideanVector with euclidean normal of 0 does not have a "
+                               "unit vector");
+  }
+
   EuclideanVector v{*this};
   double norm = this->GetEuclideanNorm();
   for (int i = 0; i < dimension_; ++i) {
