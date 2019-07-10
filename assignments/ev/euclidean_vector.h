@@ -20,7 +20,7 @@ class EuclideanVectorError : public std::exception {
 class EuclideanVector {
  public:
   // Constructors
-  explicit EuclideanVector(int i) noexcept : EuclideanVector{i, 0.0} {};
+  explicit EuclideanVector(int i = 1) noexcept : EuclideanVector{i, 0.0} {};
   EuclideanVector(int n_dimension, double magnitude) noexcept;
   EuclideanVector(std::vector<double>::const_iterator it,
                   std::vector<double>::const_iterator end) noexcept;
@@ -39,7 +39,7 @@ class EuclideanVector {
   EuclideanVector& operator*=(double) noexcept;
   EuclideanVector& operator/=(double);
   explicit operator std::vector<double>() const
-      noexcept;  // TODO INVESTIGATE WHETHER I HAVE TO DO WITHOUT CONST
+      noexcept;  // TODO INVESTIGATE WHETHER I HAVE TO DO ONE WITHOUT CONST
   explicit operator std::list<double>() const noexcept;
 
   // Methods
@@ -65,7 +65,6 @@ class EuclideanVector {
   std::unique_ptr<double[]> magnitudes_;
 
   // ======= Definition of Friend functions ========
-
   friend bool operator==(const EuclideanVector& vec1, const EuclideanVector& vec2) noexcept {
     if (vec1.dimension_ != vec2.dimension_) {
       return false;

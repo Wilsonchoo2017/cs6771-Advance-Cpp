@@ -19,20 +19,9 @@ int main() {
   std::vector<double> a2{9, 0, 8, 6, 7};
   EuclideanVector e{a2.begin(), a2.end()};
 
-  EuclideanVector test1{3, 2.3};
-
-  std::cout << "a: " << a;
-  std::cout << "b: " << b;
-  std::cout << "c: " << c;
-  std::cout << "d: " << d;
-  std::cout << "e: " << e;
-  std::cout << "test1: " << test1;
   // use the copy constructor
-  EuclideanVector f(e);
-  EuclideanVector test2{std::move(e)};
+  EuclideanVector f{e};
 
-  std::cout << "f: " << f;
-  std::cout << "test2: " << test2;
   std::cout << a.GetNumDimensions() << ": " << a << '\n';
   std::cout << "D1:" << b.at(1) << " " << b << '\n';
   std::cout << c << " Euclidean Norm = " << c.GetEuclideanNorm() << '\n';
@@ -46,9 +35,13 @@ int main() {
   std::cout << g << '\n';
   std::cout << f << '\n';
 
+  EuclideanVector zero(0);
+  std::cout << zero.at(0) << '\n';
+
   // try operator overloading
   e += d;
   std::cout << e << '\n';
+
   EuclideanVector h = e - g;
   std::cout << h << '\n';
 
@@ -76,3 +69,4 @@ int main() {
     std::cout << d << '\n';
   }
 }
+

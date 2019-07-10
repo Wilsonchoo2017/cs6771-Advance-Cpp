@@ -10,9 +10,11 @@
 
 EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept
   : dimension_{n_dimension} {
-  magnitudes_ = std::make_unique<double[]>(n_dimension);
-  for (int i = 0; i < n_dimension; ++i) {
-    magnitudes_[i] = magnitude;
+  if (n_dimension > 0) {
+    magnitudes_ = std::make_unique<double[]>(n_dimension);
+    for (int i = 0; i < n_dimension; ++i) {
+      magnitudes_[i] = magnitude;
+    }
   }
 }
 
@@ -55,12 +57,12 @@ EuclideanVector& EuclideanVector::operator=(EuclideanVector&& v) noexcept {
 }
 
 double& EuclideanVector::operator[](int i) noexcept {
-  assert(i < 0 || i >= dimension_);
+  assert(0 <= i || i < dimension_);
   return magnitudes_[i];
 }
 
 double EuclideanVector::operator[](int i) const noexcept {
-  assert(i < 0 || i >= dimension_);
+  assert(0 <= i || i < dimension_);
   return magnitudes_[i];
 }
 
@@ -102,7 +104,7 @@ EuclideanVector& EuclideanVector::operator/=(const double num) {
 }
 
 EuclideanVector::operator std::vector<double>() const noexcept {
-  std::vector<double> vec;
+  std::vector<double> vec{};
   vec.reserve(dimension_);
   for (int i = 0; i < dimension_; ++i) {
     vec.push_back(magnitudes_[i]);
@@ -111,7 +113,7 @@ EuclideanVector::operator std::vector<double>() const noexcept {
 }
 
 EuclideanVector::operator std::list<double>() const noexcept {
-  std::list<double> lst;
+  std::list<double> lst{};
   for (int i = 0; i < dimension_; ++i) {
     lst.push_back(magnitudes_[i]);
   }
