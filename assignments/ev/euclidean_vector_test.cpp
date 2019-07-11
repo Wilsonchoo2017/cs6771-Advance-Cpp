@@ -20,19 +20,8 @@
 
 */
 
-#include <limits.h>
-
 #include "assignments/ev/euclidean_vector.h"
 #include "catch.h"
-
-bool check_if_content_is_zero(EuclideanVector vec) {
-  for (int i = 0; i < vec.GetNumDimensions(); i++) {
-    if (vec.at(i) != 0.0) {
-      return false;
-    }
-  }
-  return true;
-}
 
 SCENARIO("Testing Constructors") {
   GIVEN("some default constructor") {
@@ -49,12 +38,20 @@ SCENARIO("Testing Constructors") {
       REQUIRE(five_pos.GetNumDimensions() == 5);
       REQUIRE(zero.GetNumDimensions() == 0);
     }
-    AND_THEN("Their initial values should be 0.0") {
-      REQUIRE(check_if_content_is_zero(no_arg));
-      REQUIRE(check_if_content_is_zero(one_pos));
-      REQUIRE(check_if_content_is_zero(two_pos));
-      REQUIRE(check_if_content_is_zero(five_pos));
-      REQUIRE(check_if_content_is_zero(zero));
+    AND_GIVEN("Some reference Vectors to compare with") {
+      std::vector v1{0.0};
+      std::vector v2{0.0, 0.0};
+      std::vector v3{0.0, 0.0, 0.0, 0.0, 0.0};
+      EuclideanVector ref_ev1{v1.begin(), v1.end()};
+      EuclideanVector ref_ev2{v2.begin(), v2.end()};
+      EuclideanVector ref_ev3{v3.begin(), v3.end()};
+
+      AND_THEN("Their initial values should be 0.0") {
+        REQUIRE(no_arg == ref_ev1);
+        REQUIRE(one_pos == ref_ev1);
+        REQUIRE(two_pos == ref_ev2);
+        REQUIRE(five_pos == ref_ev3);
+      }
     }
   }
   GIVEN("Some Constructors with arguments (int and double)") {
@@ -276,30 +273,31 @@ SCENARIO("Testing Constructors") {
 
 // after this point we are confident with our constructor is working
 
-TEST_CASE("Testing Methods") {
+SCENARIO("Testing Methods") {
   GIVEN("Some Arrays") {
 
     std::vector<double> v0{};
     std::vector<double> v1{1.0, 2.0, 3.0};
     std::vector<double> v2{1.0, -2.0, 3.0, -4.0, 5.0};
+    std::vector<double> v3{0.0, 0.0};
     AND_GIVEN("Some EV") {
-
       EuclideanVector ev0{v0.begin(), v0.end()};
       EuclideanVector ev1(v1.begin(), v1.end());
       EuclideanVector ev2(v2.begin(), v2.end());
+      EuclideanVector ev3(v3.begin(), v3.end());
       WHEN("We try to Copy assign it") {
-        EuclideanVector ev3{v1.begin(), v1.end()};
-        THEN("e3 Should be equal to v0") {
-          ev3 = ev0;
-          REQUIRE(ev3 == ev0);
+        EuclideanVector ev4{v1.begin(), v1.end()};
+        THEN("e4 Should be equal to v0") {
+          ev4 = ev0;
+          REQUIRE(ev4 == ev0);
         }
-        THEN("e3 Should be equal to ev1") {
-          ev3 = ev1;
-          REQUIRE(ev3 == ev1);
+        THEN("e4 Should be equal to ev1") {
+          ev4 = ev1;
+          REQUIRE(ev4 == ev1);
         }
-        THEN("e3 Should be equal to ev2") {
-          ev3 = ev2;
-          REQUIRE(ev3 == ev2);
+        THEN("e4 Should be equal to ev2") {
+          ev4 = ev2;
+          REQUIRE(ev4 == ev2);
         }
       }
       AND_GIVEN("some reference vectors") {
@@ -307,51 +305,97 @@ TEST_CASE("Testing Methods") {
         EuclideanVector ref0 = ev0;
         EuclideanVector ref1 = ev1;
         EuclideanVector ref2 = ev2;
+        EuclideanVector ref3 = ev3;
         REQUIRE(ref0 == ev0);
         REQUIRE(ref1 == ev1);
         REQUIRE(ref2 == ev2);
+        REQUIRE(ref3 == ev3);
         WHEN("We try to copy assign it") {
-          EuclideanVector ev3{v1.begin(), v1.end()};
+          EuclideanVector ev4{v1.begin(), v1.end()};
 
           THEN("it should be equal to what it copy assigned") {
-            ev3 = std::move(ev0);
-            REQUIRE(ev3 == ref0);
+            ev4 = std::move(ev0);
+            REQUIRE(ev4 == ref0);
             REQUIRE(ev0.GetNumDimensions() == 0);
           }
           THEN("it should be equal to what it copy assigned") {
-            ev3 = std::move(ev1);
-            REQUIRE(ev3 == ref1);
+            ev4 = std::move(ev1);
+            REQUIRE(ev4 == ref1);
             REQUIRE(ev1.GetNumDimensions() == 0);
           }
           THEN("it should be equal to what it copy assigned") {
-            ev3 = std::move(ev2);
-            REQUIRE(ev3 == ref2);
+            ev4 = std::move(ev2);
+            REQUIRE(ev4 == ref2);
             REQUIRE(ev2.GetNumDimensions() == 0);
+          }
+          THEN("it should be equal to what it copy assigned") {
+            ev4 = std::move(ev3);
+            REQUIRE(ev4 == ref3);
+            REQUIRE(ev3.GetNumDimensions() == 0);
           }
           WHEN("We try to subscript on it") {
             double aa = {ev0[0]};
             double bb = {ev1[0]};
             double cc = {ev2[0]};
+            double dd = {ev3[0]};
 
             REQUIRE(aa == ev0[0]);
             REQUIRE(bb == ev1[0]);
             REQUIRE(cc == ev2[0]);
+            REQUIRE(dd == ev3[0]);
 
             ev0[0] = 2.0;
             ev1[0] = 2.0;
             ev1[1] = 2.0;
             ev2[0] = 2.0;
-ev0[1] = 2.0;
+            ev0[1] = 2.0;
+            ev3[1] = 2.0;
+            ev3[0] = 2.0;
 
             REQUIRE(ev0[0] == 2.0);
             REQUIRE(ev1[0] == 2.0);
             REQUIRE(ev1[1] == 2.0);
             REQUIRE(ev2[0] == 2.0);
+
+            REQUIRE(ev3[1] == 2.0);
+            REQUIRE(ev3[0] == 2.0);
+          }
+          WHEN("We Try To Subscript on Invalid Element") {
             REQUIRE_FALSE(ev0[1] == 2.0);
+            REQUIRE_FALSE(ev1[-1] == 2.0);
+            REQUIRE_FALSE(ev2[-1] == 2.0);
+            REQUIRE_FALSE(ev3[-1] == 2.0);
           }
         }
       }
-      AND_GIVEN("Some const EV") {
+      AND_GIVEN("Some Reference Number to test with") {
+        double ref_zero = sqrt(0);
+        double ref_aa = sqrt(1.0 * 1.0 + 2.0 * 2.0 + 3.0 * 3.0);
+        double ref_bb = sqrt(1.0 * 1.0 + -2.0 * -2.0 + 3.0 * 3.0 + -4.0 * -4.0 + 5.0 * 5.0);
+        WHEN("We call GetEuclideanNorm()") {
+          double aa = ev1.GetEuclideanNorm();
+          double bb = ev2.GetEuclideanNorm();
+          double zero_1 = ev3.GetEuclideanNorm();
+          THEN("It should give the right answers with Reference Numbers") {
+            REQUIRE(aa == ref_aa);
+            REQUIRE(bb == ref_bb);
+            REQUIRE(zero_1 == ref_zero);
+            REQUIRE_THROWS_WITH(ev0.GetEuclideanNorm(),
+                                "EuclideanVector with no dimensions does not have a norm");
+          }
+          AND_GIVEN("Some Reference Number to test with") {
+
+
+            WHEN("We call CreateUnitVector()") {
+              THEN("It should give the right answers with Reference Numbers") {
+                // Todo
+              }
+            }
+          }
+        }
+      }
+
+      /*AND_GIVEN("Some const EV") {
         EuclideanVector const ev9{v0.begin(), v0.end()};
         EuclideanVector const ev8(v1.begin(), v1.end());
         EuclideanVector const ev7(v2.begin(), v2.end());
@@ -373,6 +417,52 @@ ev0[1] = 2.0;
           }
         }
       }
+      */
     }
   }
+}
+
+SCENARIO("Friends test cases") {
+  GIVEN("Some Vectors ") {
+    std::vector<double> v0{};
+    std::vector<double> v1{1.0, 2.0, 3.0};
+    std::vector<double> v2{1.0, -2.0, 3.0, -4.0, 5.0};
+    std::vector<double> v3{0.0, 0.0};
+    AND_GIVEN("we initialise the same Euclidean Vector") {
+      // TODO add initialise vectors
+      WHEN("We try to compare each of these") {
+        // TODO  we compare each of them
+      }
+    }
+    AND_GIVEN(
+        "We initialise some reference vectors for the operation and vectors to do the operation") {
+      WHEN("we try to do subtraction") {
+        THEN("We should get results some vectors") {
+          // TODO
+        }
+      }
+    }
+    AND_GIVEN("Some reference vector to compare and vectors to multiplication on") {
+      WHEN("we try to do some multiplication") {
+        THEN("The result should be the same as our reference counter") {
+          // TODO
+        }
+      }
+    }
+    AND_GIVEN("Some reference vector to compare and vectors to multiple on") {
+      WHEN("we try to do some multiple") {
+        THEN("The result should be the same as our reference count") {
+          // TODO
+        }
+      }
+    }
+
+    AND_GIVEN("Some reference vector to compare and vectors to divide on") {
+      WHEN("we try to do some divide") {
+        THEN("The result should be the same as our reference counter") {  // TODO
+        }
+      }
+    }
+  }
+  // Todo COnst correctness
 }

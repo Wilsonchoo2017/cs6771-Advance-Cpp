@@ -10,28 +10,38 @@
 
 EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept
   : dimension_{n_dimension} {
-  if (n_dimension > 0) {
+  if (dimension_ > 0) {
     magnitudes_ = std::make_unique<double[]>(n_dimension);
     for (int i = 0; i < n_dimension; ++i) {
       magnitudes_[i] = magnitude;
     }
+  } else {
+    magnitudes_ = std::make_unique<double[]>(0);
   }
 }
 
 EuclideanVector::EuclideanVector(std::vector<double>::const_iterator start,
                                  std::vector<double>::const_iterator end) noexcept {
   dimension_ = std::distance(start, end);
-  magnitudes_ = std::make_unique<double[]>(dimension_);
-  for (int i = 0; start != end; ++start, ++i) {
-    magnitudes_[i] = *start;
+  if (dimension_ > 0) {
+    magnitudes_ = std::make_unique<double[]>(dimension_);
+    for (int i = 0; start != end; ++start, ++i) {
+      magnitudes_[i] = *start;
+    }
+  } else {
+    magnitudes_ = std::make_unique<double[]>(0);
   }
 }
 
 EuclideanVector::EuclideanVector(const EuclideanVector& v) noexcept {
   dimension_ = v.dimension_;
-  magnitudes_ = std::make_unique<double[]>(dimension_);
-  for (int i = 0; i < dimension_; ++i) {
-    magnitudes_[i] = v.magnitudes_[i];
+  if (dimension_ > 0) {
+    magnitudes_ = std::make_unique<double[]>(dimension_);
+    for (int i = 0; i < dimension_; ++i) {
+      magnitudes_[i] = v.magnitudes_[i];
+    }
+  } else {
+    magnitudes_ = std::make_unique<double[]>(0);
   }
 }
 
@@ -42,9 +52,13 @@ EuclideanVector::EuclideanVector(EuclideanVector&& v) noexcept
 
 EuclideanVector& EuclideanVector::operator=(const EuclideanVector& v) noexcept {
   dimension_ = v.dimension_;
-  magnitudes_ = std::make_unique<double[]>(dimension_);
-  for (int i = 0; i < dimension_; ++i) {
-    magnitudes_[i] = v.magnitudes_[i];
+  if (dimension_ > 0) {
+    magnitudes_ = std::make_unique<double[]>(dimension_);
+    for (int i = 0; i < dimension_; ++i) {
+      magnitudes_[i] = v.magnitudes_[i];
+    }
+  } else {
+    magnitudes_ = std::make_unique<double[]>(0);
   }
   return *this;
 }
