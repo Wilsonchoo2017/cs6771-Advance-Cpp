@@ -10,8 +10,8 @@
 
 class EuclideanVectorError : public std::exception {
  public:
-  explicit EuclideanVectorError(const std::string& what) : what_(what) {}
-  const char* what() const noexcept { return what_.c_str(); }
+  explicit EuclideanVectorError(const std::string&& what) : what_(what) {}
+  const char* what() const noexcept override { return what_.c_str(); }
 
  private:
   std::string what_;
@@ -53,8 +53,8 @@ class EuclideanVector {
   friend EuclideanVector operator+(const EuclideanVector&, const EuclideanVector&);
   friend EuclideanVector operator-(const EuclideanVector&, const EuclideanVector&);
   friend double operator*(const EuclideanVector&, const EuclideanVector&);
-  friend EuclideanVector operator*(const EuclideanVector&, double) noexcept;
-  friend EuclideanVector operator*(double, const EuclideanVector&) noexcept;
+  friend EuclideanVector operator*(const EuclideanVector&, double)noexcept;
+  friend EuclideanVector operator*(double, const EuclideanVector&)noexcept;
   friend EuclideanVector operator/(const EuclideanVector&, double);
   friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
 
@@ -145,9 +145,13 @@ class EuclideanVector {
   friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
     os << '[';
     for (int i = 0; i < v.dimension_; i++) {
-      os << ' ' << v.magnitudes_[i];
+      if (i == 0) {
+        os << v.magnitudes_[i];
+      } else {
+        os << ' ' << v.magnitudes_[i];
+      }
     }
-    os << " ]";
+    os << ']';
     return os;
   }
 };

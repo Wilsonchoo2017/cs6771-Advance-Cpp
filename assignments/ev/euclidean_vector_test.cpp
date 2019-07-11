@@ -1,7 +1,9 @@
 
 #include <sstream>
+#include <utility>
 
 #include "assignments/ev/euclidean_vector.h"
+#include "catch.h"
 /*
 
   == Explanation and rational of testing ==
@@ -23,9 +25,6 @@
   skipped
 
 */
-
-#include "assignments/ev/euclidean_vector.h"
-#include "catch.h"
 
 SCENARIO("Testing Constructors and ostream") {
   GIVEN("some default constructor") {
@@ -280,9 +279,9 @@ SCENARIO("Testing Constructors and ostream") {
           out0 << ev0;
           out1 << ev1;
           out2 << ev2;
-          REQUIRE(out0.str() == "[ ]");
-          REQUIRE(out1.str() == "[ 1 2 3 ]");
-          REQUIRE(out2.str() == "[ 1.5 -2.5 3.5 -4.5 5.5 ]");
+          REQUIRE(out0.str() == "[]");
+          REQUIRE(out1.str() == "[1 2 3]");
+          REQUIRE(out2.str() == "[1.5 -2.5 3.5 -4.5 5.5]");
         }
       }
     }
@@ -292,7 +291,6 @@ SCENARIO("Testing Constructors and ostream") {
 // after this point we are confident with our constructor is working
 SCENARIO("Testing Methods") {
   GIVEN("Some Arrays") {
-
     std::vector<double> v0{};
     std::vector<double> v1{1.0, 2.0, 3.0};
     std::vector<double> v2{1.0, -2.0, 3.0, -4.0, 5.0};
@@ -319,12 +317,10 @@ SCENARIO("Testing Methods") {
         AND_WHEN("We Try to Chain Assign it") {
           ev4 = ev0 = ev1;
           REQUIRE(ev4 == ev1);
-          // TODO explain why is this important
         }
       }
 
       AND_GIVEN("some reference vectors") {
-
         EuclideanVector ref0 = ev0;
         EuclideanVector ref1 = ev1;
         EuclideanVector ref2 = ev2;
@@ -474,7 +470,6 @@ SCENARIO("Friends test cases") {
       }
       AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
                 "operation") {
-
         EuclideanVector sum_ev0(0);
         EuclideanVector sum_ev1(3, 3.0);
         EuclideanVector sum_ev2(5, 5.0);
@@ -585,7 +580,6 @@ SCENARIO("Friends test cases") {
       }
       AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
                 "operation") {
-
         double test_num_0 = 0;
         double test_num_1 = -1;
         double test_num_2 = 2;
@@ -647,7 +641,6 @@ SCENARIO("Friends test cases") {
       }
       AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
                 "operation") {
-
         double test_num_1 = 3.0;
         double test_num_2 = 5.0;
         double test_num_3 = 8.0;
