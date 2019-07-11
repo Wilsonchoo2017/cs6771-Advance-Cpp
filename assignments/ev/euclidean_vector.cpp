@@ -1,6 +1,6 @@
 #include "assignments/ev/euclidean_vector.h"
 
-#include <algorithm>  // Look at these - they are helpful https://en.cppreference.com/w/cpp/algorithm
+#include <algorithm>
 #include <assert.h>
 #include <cmath>
 #include <exception>
@@ -8,6 +8,18 @@
 #include <list>
 #include <utility>
 #include <vector>
+
+
+/*
+ * Done by z5157656 Choo Yee Hang
+ * This file contains the implementation of Euclidean Vectors
+ * Constructors, methods and operations are located here
+ * Implementation of friends is located in the h file.
+ *
+ * For dimension that is 0, We construct auto make_unique of(0).
+ */
+
+
 
 EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept
   : dimension_{n_dimension} {

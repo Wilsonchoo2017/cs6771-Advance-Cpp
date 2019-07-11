@@ -5,24 +5,39 @@
 #include "assignments/ev/euclidean_vector.h"
 #include "catch.h"
 /*
+ Done by z5157656 Choo Yee Hang
+ This file contains teh testing of class implementation fo Euclidean Vectors
+ uses catch2 frame work to do the testing.
 
   == Explanation and rational of testing ==
 
   Choice of values (COV) to test:
     - 0
-    - so of small values that is close to 0:  1, 2, 5,
+    -  so of small values that is close to 0 e.g  1, 2, 5, -1, -2, -5
     Max and min is not used due to errors such as these are due to not enough memory in the VM.
   Thus, they are removed. (also makes testing very slow D:)
 
   Approach of testing: (White Box)
     We will test each public methods and friends with our COV unless specified not to. Purpose of
-    this is to have large coverage and includes our edge cases.
-  Const Correctness: TODO
+    this is to have larger coverage and includes our edge cases which is mostly dealing with 0
 
 
-   In Construction Test Case:
-   GetNumDiemsion, (one of) At, ==, vector & list casting is used thus some of these test are
-  skipped
+   In Construction Test Case: we tested every constructor and compare themw with using auto
+   reference Vectors. Since the rest of our testing will be mostly depending on our constructor with
+   vectors. We made sure that the construction with vectors is tested more to be confident with our
+       vector construction. Thus we can see that ostream and used to test our constructor with
+ vectors. We also used previous results to prove other constructor so we can prevent A single point
+ of failure in our testing.
+
+      For the rest of our Test Case: We mostly construct auto reference EV to compare it with ==.
+   some things to note:
+   - in assignment, we also tested chain assignments. Just to make sure that our method returns A
+   reference. if it was A void method then chain assignments wouldnt work.
+   - we construct our reference assignment by constructing them with A vector.
+   - For the operations we did auto foreach when operations are done in each vector elements.
+   - This approach is very similar of using the concept of data refinement and abstraction
+   - for those methods that will throw exception, we used catch2 THROW_WITH method to verify our
+      Exception statement.
 
 */
 
