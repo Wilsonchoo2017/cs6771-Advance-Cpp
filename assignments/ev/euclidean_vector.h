@@ -38,10 +38,8 @@ class EuclideanVector {
   EuclideanVector& operator-=(const EuclideanVector&);
   EuclideanVector& operator*=(double) noexcept;
   EuclideanVector& operator/=(double);
-  explicit operator std::vector<double>() const
-      noexcept;  // TODO INVESTIGATE WHETHER I HAVE TO DO ONE WITHOUT CONST
+  explicit operator std::vector<double>() const noexcept;
   explicit operator std::list<double>() const noexcept;
-
   // Methods
   double at(int) const;
   double& at(int);
@@ -54,9 +52,9 @@ class EuclideanVector {
   friend bool operator!=(const EuclideanVector&, const EuclideanVector&) noexcept;
   friend EuclideanVector operator+(const EuclideanVector&, const EuclideanVector&);
   friend EuclideanVector operator-(const EuclideanVector&, const EuclideanVector&);
-  friend double operator*(const EuclideanVector&, const EuclideanVector&);  // TODO wary about this
-  friend EuclideanVector operator*(const EuclideanVector&, double)noexcept;
-  friend EuclideanVector operator*(double, const EuclideanVector&)noexcept;
+  friend double operator*(const EuclideanVector&, const EuclideanVector&);
+  friend EuclideanVector operator*(const EuclideanVector&, double) noexcept;
+  friend EuclideanVector operator*(double, const EuclideanVector&) noexcept;
   friend EuclideanVector operator/(const EuclideanVector&, double);
   friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
 
@@ -109,14 +107,12 @@ class EuclideanVector {
 
   // Dot Product
   friend double operator*(const EuclideanVector& vec1, const EuclideanVector& vec2) {
-    if (vec2.dimension_ == 0) {
-      throw EuclideanVectorError("Invalid vector division by 0");
+    if (vec1.dimension_ != vec2.dimension_) {
+      throw EuclideanVectorError("Dimensions of LHS(X) and RHS(Y) do not match");
     }
-    std::vector<double> tmp;
-    tmp.reserve(vec1.dimension_);
     double result = 0;
     for (int i = 0; i < vec1.dimension_; ++i) {
-      result = result + (vec1.magnitudes_[i] + vec2.magnitudes_[i]);
+      result = result + (vec1.magnitudes_[i] * vec2.magnitudes_[i]);
     }
     return result;
   }
@@ -135,7 +131,9 @@ class EuclideanVector {
   }
 
   friend EuclideanVector operator/(const EuclideanVector& vec1, double num) {
-    // Throw Exception
+    if (num == 0) {
+      throw EuclideanVectorError("Invalid vector division by 0");
+    }
     std::vector<double> tmp;
     tmp.reserve(vec1.dimension_);
     for (int i = 0; i < vec1.dimension_; ++i) {
@@ -149,7 +147,7 @@ class EuclideanVector {
     for (int i = 0; i < v.dimension_; i++) {
       os << ' ' << v.magnitudes_[i];
     }
-    os << " ]" << '\n';
+    os << " ]";
     return os;
   }
 };

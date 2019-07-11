@@ -6,6 +6,7 @@
 #include <exception>
 #include <iterator>
 #include <list>
+#include <utility>
 #include <vector>
 
 EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept
@@ -51,15 +52,8 @@ EuclideanVector::EuclideanVector(EuclideanVector&& v) noexcept
 }
 
 EuclideanVector& EuclideanVector::operator=(const EuclideanVector& v) noexcept {
-  dimension_ = v.dimension_;
-  if (dimension_ > 0) {
-    magnitudes_ = std::make_unique<double[]>(dimension_);
-    for (int i = 0; i < dimension_; ++i) {
-      magnitudes_[i] = v.magnitudes_[i];
-    }
-  } else {
-    magnitudes_ = std::make_unique<double[]>(0);
-  }
+  EuclideanVector tmp{v};
+  std::swap(tmp, *this);
   return *this;
 }
 

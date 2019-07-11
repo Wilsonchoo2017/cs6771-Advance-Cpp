@@ -1,3 +1,7 @@
+
+#include <sstream>
+
+#include "assignments/ev/euclidean_vector.h"
 /*
 
   == Explanation and rational of testing ==
@@ -23,7 +27,7 @@
 #include "assignments/ev/euclidean_vector.h"
 #include "catch.h"
 
-SCENARIO("Testing Constructors") {
+SCENARIO("Testing Constructors and ostream") {
   GIVEN("some default constructor") {
     // According to Spec default constructor will always be non-negative and no non-argument test
     EuclideanVector no_arg;  // Not tested but good to have
@@ -238,13 +242,14 @@ SCENARIO("Testing Constructors") {
       }
     }
   }
+  // Todo explain why ostream is tested here
   GIVEN("Some Vectors and Lists") {
     std::vector<double> v0{};
     std::vector<double> v1{1.0, 2.0, 3.0};
-    std::vector<double> v2{1.0, -2.0, 3.0, -4.0, 5.0};
+    std::vector<double> v2{1.5, -2.5, 3.5, -4.5, 5.5};
     std::list<double> l0{};
     std::list<double> l1{1.0, 2.0, 3.0};
-    std::list<double> l2{1.0, -2.0, 3.0, -4.0, 5.0};
+    std::list<double> l2{1.5, -2.5, 3.5, -4.5, 5.5};
     AND_GIVEN("Euclid initialised by these Vectors to compare with") {
       EuclideanVector ev0{v0.begin(), v0.end()};
       EuclideanVector ev1(v1.begin(), v1.end());
@@ -267,12 +272,24 @@ SCENARIO("Testing Constructors") {
           REQUIRE(sc_ev5 == l2);
         }
       }
+      WHEN("We try to print them out") {
+        THEN("their output string should be the same") {
+          std::stringstream out0;
+          std::stringstream out1;
+          std::stringstream out2;
+          out0 << ev0;
+          out1 << ev1;
+          out2 << ev2;
+          REQUIRE(out0.str() == "[ ]");
+          REQUIRE(out1.str() == "[ 1 2 3 ]");
+          REQUIRE(out2.str() == "[ 1.5 -2.5 3.5 -4.5 5.5 ]");
+        }
+      }
     }
   }
 }
 
 // after this point we are confident with our constructor is working
-
 SCENARIO("Testing Methods") {
   GIVEN("Some Arrays") {
 
@@ -286,7 +303,7 @@ SCENARIO("Testing Methods") {
       EuclideanVector ev2(v2.begin(), v2.end());
       EuclideanVector ev3(v3.begin(), v3.end());
       WHEN("We try to Copy assign it") {
-        EuclideanVector ev4{v1.begin(), v1.end()};
+        EuclideanVector ev4{v1.begin(), v1.end()};  // we try to assign it to other variable
         THEN("e4 Should be equal to v0") {
           ev4 = ev0;
           REQUIRE(ev4 == ev0);
@@ -299,7 +316,13 @@ SCENARIO("Testing Methods") {
           ev4 = ev2;
           REQUIRE(ev4 == ev2);
         }
+        AND_WHEN("We Try to Chain Assign it") {
+          ev4 = ev0 = ev1;
+          REQUIRE(ev4 == ev1);
+          // TODO explain why is this important
+        }
       }
+
       AND_GIVEN("some reference vectors") {
 
         EuclideanVector ref0 = ev0;
@@ -310,25 +333,25 @@ SCENARIO("Testing Methods") {
         REQUIRE(ref1 == ev1);
         REQUIRE(ref2 == ev2);
         REQUIRE(ref3 == ev3);
-        WHEN("We try to copy assign it") {
+        WHEN("We try to move assign it") {
           EuclideanVector ev4{v1.begin(), v1.end()};
 
-          THEN("it should be equal to what it copy assigned") {
+          THEN("it should be equal to what it move assigned") {
             ev4 = std::move(ev0);
             REQUIRE(ev4 == ref0);
             REQUIRE(ev0.GetNumDimensions() == 0);
           }
-          THEN("it should be equal to what it copy assigned") {
+          THEN("it should be equal to what it move assigned") {
             ev4 = std::move(ev1);
             REQUIRE(ev4 == ref1);
             REQUIRE(ev1.GetNumDimensions() == 0);
           }
-          THEN("it should be equal to what it copy assigned") {
+          THEN("it should be equal to what it move assigned") {
             ev4 = std::move(ev2);
             REQUIRE(ev4 == ref2);
             REQUIRE(ev2.GetNumDimensions() == 0);
           }
-          THEN("it should be equal to what it copy assigned") {
+          THEN("it should be equal to what it move assigned") {
             ev4 = std::move(ev3);
             REQUIRE(ev4 == ref3);
             REQUIRE(ev3.GetNumDimensions() == 0);
@@ -383,41 +406,35 @@ SCENARIO("Testing Methods") {
             REQUIRE_THROWS_WITH(ev0.GetEuclideanNorm(),
                                 "EuclideanVector with no dimensions does not have a norm");
           }
-          AND_GIVEN("Some Reference Number to test with") {
 
-
-            WHEN("We call CreateUnitVector()") {
+          WHEN("We call CreateUnitVector()") {
+            EuclideanVector result_1 = ev1.CreateUnitVector();
+            EuclideanVector result_2 = ev2.CreateUnitVector();
+            GIVEN("Some Reference Number to test with") {
+              std::for_each(v1.begin(), v1.end(), [=](double& n) { n /= ref_aa; });
+              std::for_each(v2.begin(), v2.end(), [=](double& n) { n /= ref_bb; });
+              EuclideanVector ref_v1{v1.begin(), v1.end()};
+              EuclideanVector ref_v2{v2.begin(), v2.end()};
               THEN("It should give the right answers with Reference Numbers") {
-                // Todo
+                REQUIRE(result_1 == ref_v1);
+                REQUIRE(result_2 == ref_v2);
+                REQUIRE_THROWS_WITH(
+                    ev3.CreateUnitVector(),
+                    "EuclideanVector with euclidean normal of 0 does not have a unit vector");
+                REQUIRE_THROWS_WITH(
+                    ev0.CreateUnitVector(),
+                    "EuclideanVector with no dimensions does not have a unit vector");
               }
+            }
+            THEN("The old variables should be the same") {
+              EuclideanVector tmp_ev1{v1.begin(), v1.end()};
+              EuclideanVector tmp_ev2{v2.begin(), v2.end()};
+              REQUIRE(ev1 == tmp_ev1);
+              REQUIRE(ev2 == tmp_ev2);
             }
           }
         }
       }
-
-      /*AND_GIVEN("Some const EV") {
-        EuclideanVector const ev9{v0.begin(), v0.end()};
-        EuclideanVector const ev8(v1.begin(), v1.end());
-        EuclideanVector const ev7(v2.begin(), v2.end());
-
-        // TODO try to change value of auto const value
-        WHEN("We try to Copy assign it") {
-          EuclideanVector ev3{v1.begin(), v1.end()};
-          THEN("e3 Should be equal to v9") {
-            ev3 = ev9;
-            REQUIRE(ev3 == ev9);
-          }
-          THEN("e3 Should be equal to ev8") {
-            ev3 = ev8;
-            REQUIRE(ev3 == ev8);
-          }
-          THEN("e3 Should be equal to ev7") {
-            ev3 = ev7;
-            REQUIRE(ev3 == ev7);
-          }
-        }
-      }
-      */
     }
   }
 }
@@ -428,41 +445,238 @@ SCENARIO("Friends test cases") {
     std::vector<double> v1{1.0, 2.0, 3.0};
     std::vector<double> v2{1.0, -2.0, 3.0, -4.0, 5.0};
     std::vector<double> v3{0.0, 0.0};
-    AND_GIVEN("we initialise the same Euclidean Vector") {
-      // TODO add initialise vectors
-      WHEN("We try to compare each of these") {
-        // TODO  we compare each of them
-      }
-    }
-    AND_GIVEN(
-        "We initialise some reference vectors for the operation and vectors to do the operation") {
-      WHEN("we try to do subtraction") {
-        THEN("We should get results some vectors") {
-          // TODO
+    AND_GIVEN("Some EV") {
+      EuclideanVector ev0{v0.begin(), v0.end()};
+      EuclideanVector ev1(v1.begin(), v1.end());
+      EuclideanVector ev2(v2.begin(), v2.end());
+      EuclideanVector ev3(v3.begin(), v3.end());
+      AND_GIVEN("we initialise the same Euclidean Vector") {
+        EuclideanVector same_0 = ev0;
+        EuclideanVector same_1 = ev1;
+        EuclideanVector same_2 = ev2;
+        EuclideanVector same_3 = ev3;
+        WHEN("We try to compare each of these") {
+          THEN("It should give true and pass the tests")
+          REQUIRE(same_0 == ev0);
+          REQUIRE(same_1 == ev1);
+          REQUIRE(same_2 == ev2);
+          REQUIRE(same_3 == ev3);
+        }
+        WHEN("We try to compare them incorrectly") {
+          THEN("it should give false") {
+            REQUIRE_FALSE(same_0 == ev1);
+            REQUIRE_FALSE(same_1 == ev3);
+            REQUIRE_FALSE(same_3 == ev2);
+            REQUIRE(same_0 != ev2);
+            REQUIRE(same_1 != ev0);
+          }
         }
       }
-    }
-    AND_GIVEN("Some reference vector to compare and vectors to multiplication on") {
-      WHEN("we try to do some multiplication") {
-        THEN("The result should be the same as our reference counter") {
-          // TODO
-        }
-      }
-    }
-    AND_GIVEN("Some reference vector to compare and vectors to multiple on") {
-      WHEN("we try to do some multiple") {
-        THEN("The result should be the same as our reference count") {
-          // TODO
-        }
-      }
-    }
+      AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
+                "operation") {
 
-    AND_GIVEN("Some reference vector to compare and vectors to divide on") {
-      WHEN("we try to do some divide") {
-        THEN("The result should be the same as our reference counter") {  // TODO
+        EuclideanVector sum_ev0(0);
+        EuclideanVector sum_ev1(3, 3.0);
+        EuclideanVector sum_ev2(5, 5.0);
+        EuclideanVector sum_ev3(2, 8.0);
+
+        double test_num_1 = 3.0;
+        double test_num_2 = 5.0;
+        double test_num_3 = 8.0;
+        std::for_each(v1.begin(), v1.end(), [=](double& n) { n += test_num_1; });
+        std::for_each(v2.begin(), v2.end(), [=](double& n) { n += test_num_2; });
+        std::for_each(v3.begin(), v3.end(), [=](double& n) { n += test_num_3; });
+        EuclideanVector ref_v1{v1.begin(), v1.end()};
+        EuclideanVector ref_v2{v2.begin(), v2.end()};
+        EuclideanVector ref_v3{v3.begin(), v3.end()};
+
+        WHEN("we try to do addition") {
+          EuclideanVector result_0 = sum_ev0 + ev0;
+          EuclideanVector result_1 = sum_ev1 + ev1;
+          EuclideanVector result_2 = sum_ev2 + ev2;
+          EuclideanVector result_3 = sum_ev3 + ev3;
+          THEN("We should get the same results from our reference vectors") {
+            REQUIRE(ev0 == result_0);
+            REQUIRE(ref_v1 == result_1);
+            REQUIRE(ref_v2 == result_2);
+            REQUIRE(ref_v3 == result_3);
+          }
+        }
+        AND_WHEN("We try to do invalid operation") {
+          THEN("it should throw an exception") {
+            REQUIRE_THROWS_WITH(sum_ev1 + ev0, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sum_ev1 + ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sum_ev1 + ev0, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sum_ev2 + ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sum_ev1 + ev3, "Dimensions of LHS(X) and RHS(Y) do not match");
+          }
+        }
+      }
+
+      AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
+                "operation") {
+        EuclideanVector sub_ev0(0);
+        EuclideanVector sub_ev1(3, 3.0);
+        EuclideanVector sub_ev2(5, 5.0);
+        EuclideanVector sub_ev3(2, 8.0);
+
+        double test_num_1 = 3.0;
+        double test_num_2 = 5.0;
+        double test_num_3 = 8.0;
+        std::for_each(v1.begin(), v1.end(), [=](double& n) { n -= test_num_1; });
+        std::for_each(v2.begin(), v2.end(), [=](double& n) { n -= test_num_2; });
+        std::for_each(v3.begin(), v3.end(), [=](double& n) { n -= test_num_3; });
+        EuclideanVector ref_v1{v1.begin(), v1.end()};
+        EuclideanVector ref_v2{v2.begin(), v2.end()};
+        EuclideanVector ref_v3{v3.begin(), v3.end()};
+
+        WHEN("we try to do subtraction") {
+          EuclideanVector result_0 = ev0 - sub_ev0;
+          EuclideanVector result_1 = ev1 - sub_ev1;
+          EuclideanVector result_2 = ev2 - sub_ev2;
+          EuclideanVector result_3 = ev3 - sub_ev3;
+          THEN("We should get the same results from our reference vectors") {
+            REQUIRE(ev0 == result_0);
+            REQUIRE(ref_v1 == result_1);
+            REQUIRE(ref_v2 == result_2);
+            REQUIRE(ref_v3 == result_3);
+          }
+        }
+        AND_WHEN("We try to do invalid operation") {
+          THEN("it should throw an exception") {
+            REQUIRE_THROWS_WITH(sub_ev0 - ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sub_ev1 - ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sub_ev1 - ev0, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sub_ev2 - ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sub_ev1 - ev3, "Dimensions of LHS(X) and RHS(Y) do not match");
+          }
+        }
+      }
+
+      AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
+                "operation") {
+        EuclideanVector mul_ev1(3, 3.0);
+        EuclideanVector mul_ev2(5, 5.0);
+        EuclideanVector mul_ev3(2, 8.0);
+
+        double test_num_1 = 1.0 * 3.0 + 2.0 * 3.0 + 3.0 * 3.0;
+        double test_num_2 = 1.0 * 5.0 + -2.0 * 5.0 + 3.0 * 5.0 + -4.0 * 5.0 + 5.0 * 5.0;
+        double test_num_3 = 0.0;
+
+        WHEN("we try to do subtraction") {
+          // NOT TESTED double result_0{ev0 * mul_ev0};
+          double result_1{ev1 * mul_ev1};
+          double result_2{ev2 * mul_ev2};
+          double result_3{ev3 * mul_ev3};
+          THEN("We should get the same results from our reference vectors") {
+            REQUIRE(test_num_1 == result_1);
+            REQUIRE(test_num_2 == result_2);
+            REQUIRE(test_num_3 == result_3);
+          }
+        }
+        AND_WHEN("We try to do invalid operation") {
+          THEN("it should throw an exception") {
+            REQUIRE_THROWS_WITH(ev0 * mul_ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(ev2 * mul_ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(ev1 * mul_ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(ev3 * mul_ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
+          }
+        }
+      }
+      AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
+                "operation") {
+
+        double test_num_0 = 0;
+        double test_num_1 = -1;
+        double test_num_2 = 2;
+        double test_num_3 = -3;
+        double test_num_4 = 4;
+        EuclideanVector ev_result_0 = ev0;
+        EuclideanVector ev_result_1 = ev1;
+        EuclideanVector ev_result_2 = ev2;
+        EuclideanVector ev_result_3 = ev3;
+        EuclideanVector ev_result_4 = ev1;
+        EuclideanVector ev_result_5 = ev2;
+        EuclideanVector ev_result_6 = ev3;
+
+        ev_result_0 *= test_num_0;
+        ev_result_1 *= test_num_1;
+        ev_result_2 *= test_num_2;
+        ev_result_3 *= test_num_3;
+        ev_result_4 *= test_num_4;
+        ev_result_5 *= test_num_3;
+        ev_result_6 *= test_num_1;
+        WHEN("we try to do multiply operation (ev * double)") {
+          EuclideanVector result_0 = ev0 * test_num_0;
+          EuclideanVector result_1 = ev1 * test_num_1;
+          EuclideanVector result_2 = ev2 * test_num_2;
+          EuclideanVector result_3 = ev3 * test_num_3;
+          EuclideanVector result_4 = ev1 * test_num_4;
+          EuclideanVector result_5 = ev2 * test_num_3;
+          EuclideanVector result_6 = ev3 * test_num_1;
+
+          THEN("We should get the same results from our reference vectors") {
+            REQUIRE(ev_result_0 == result_0);
+            REQUIRE(ev_result_1 == result_1);
+            REQUIRE(ev_result_2 == result_2);
+            REQUIRE(ev_result_3 == result_3);
+            REQUIRE(ev_result_4 == result_4);
+            REQUIRE(ev_result_5 == result_5);
+            REQUIRE(ev_result_6 == result_6);
+          }
+        }
+        WHEN("we try to do multiply operation (double * ev)") {
+          EuclideanVector result_0 = test_num_0 * ev0;
+          EuclideanVector result_1 = test_num_1 * ev1;
+          EuclideanVector result_2 = test_num_2 * ev2;
+          EuclideanVector result_3 = test_num_3 * ev3;
+          EuclideanVector result_4 = test_num_4 * ev1;
+          EuclideanVector result_5 = test_num_3 * ev2;
+          EuclideanVector result_6 = test_num_1 * ev3;
+
+          THEN("We should get the same results from our reference vectors") {
+            REQUIRE(ev_result_0 == result_0);
+            REQUIRE(ev_result_1 == result_1);
+            REQUIRE(ev_result_2 == result_2);
+            REQUIRE(ev_result_3 == result_3);
+            REQUIRE(ev_result_4 == result_4);
+            REQUIRE(ev_result_5 == result_5);
+            REQUIRE(ev_result_6 == result_6);
+          }
+        }
+      }
+      AND_GIVEN("We initialise some reference vectors for the operation and vectors to do the "
+                "operation") {
+
+        double test_num_1 = 3.0;
+        double test_num_2 = 5.0;
+        double test_num_3 = 8.0;
+        std::for_each(v1.begin(), v1.end(), [=](double& n) { n /= test_num_1; });
+        std::for_each(v2.begin(), v2.end(), [=](double& n) { n /= test_num_2; });
+        std::for_each(v3.begin(), v3.end(), [=](double& n) { n /= test_num_3; });
+        EuclideanVector ref_v1{v1.begin(), v1.end()};
+        EuclideanVector ref_v2{v2.begin(), v2.end()};
+        EuclideanVector ref_v3{v3.begin(), v3.end()};
+
+        WHEN("we try to do division") {
+          EuclideanVector result_1 = ev1 / test_num_1;
+          EuclideanVector result_2 = ev2 / test_num_2;
+          EuclideanVector result_3 = ev3 / test_num_3;
+          THEN("We should get the same results from our reference vectors") {
+            REQUIRE(ref_v1 == result_1);
+            REQUIRE(ref_v2 == result_2);
+            REQUIRE(ref_v3 == result_3);
+          }
+        }
+        AND_WHEN("We try to do invalid operation") {
+          THEN("it should throw an exception") {
+            REQUIRE_THROWS_WITH(ev0 / 0.0, "Invalid vector division by 0");
+            REQUIRE_THROWS_WITH(ev1 / 0, "Invalid vector division by 0");
+            REQUIRE_THROWS_WITH(ev2 / 0, "Invalid vector division by 0");
+            REQUIRE_THROWS_WITH(ev3 / 0, "Invalid vector division by 0");
+          }
         }
       }
     }
   }
-  // Todo COnst correctness
 }
