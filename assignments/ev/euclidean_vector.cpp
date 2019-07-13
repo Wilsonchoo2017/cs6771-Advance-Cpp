@@ -86,7 +86,7 @@ double EuclideanVector::operator[](int i) const noexcept {
 
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& v) {
   if (this->dimension_ != v.dimension_) {
-     std::ostringstream stream;
+    std::ostringstream stream;
     stream << "Dimensions of LHS(" << this->dimension_ << ") and RHS(" << v.dimension_
            << ") do not match";
     throw EuclideanVectorError(stream.str());
@@ -147,7 +147,7 @@ EuclideanVector::operator std::list<double>() const noexcept {
 double EuclideanVector::at(int i) const {
   if (i < 0 || i >= dimension_) {
     std::ostringstream stream;
-    stream << "Index " << dimension_ << "is not valid for this EuclideanVector object";
+    stream << "Index " << dimension_ << " is not valid for this EuclideanVector object";
     throw EuclideanVectorError(stream.str());
   }
   return magnitudes_[i];
@@ -156,7 +156,7 @@ double EuclideanVector::at(int i) const {
 double& EuclideanVector::at(int i) {
   if (i < 0 || i >= dimension_) {
     std::ostringstream stream;
-    stream << "Index " << dimension_ << "is not valid for this EuclideanVector object";
+    stream << "Index " << dimension_ << " is not valid for this EuclideanVector object";
     throw EuclideanVectorError(stream.str());
   }
   return magnitudes_[i];
