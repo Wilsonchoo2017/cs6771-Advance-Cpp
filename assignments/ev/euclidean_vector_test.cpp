@@ -514,11 +514,11 @@ SCENARIO("Friends test cases") {
         }
         AND_WHEN("We try to do invalid operation") {
           THEN("it should throw an exception") {
-            REQUIRE_THROWS_WITH(sum_ev1 + ev0, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sum_ev1 + ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sum_ev1 + ev0, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sum_ev2 + ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sum_ev1 + ev3, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sum_ev1 + ev0, "Dimensions of LHS(3) and RHS(0) do not match");
+            REQUIRE_THROWS_WITH(sum_ev1 + ev2, "Dimensions of LHS(3) and RHS(5) do not match");
+            REQUIRE_THROWS_WITH(sum_ev1 + ev0, "Dimensions of LHS(3) and RHS(0) do not match");
+            REQUIRE_THROWS_WITH(sum_ev2 + ev1, "Dimensions of LHS(5) and RHS(3) do not match");
+            REQUIRE_THROWS_WITH(sum_ev1 + ev3, "Dimensions of LHS(3) and RHS(2) do not match");
           }
         }
       }
@@ -554,11 +554,11 @@ SCENARIO("Friends test cases") {
         }
         AND_WHEN("We try to do invalid operation") {
           THEN("it should throw an exception") {
-            REQUIRE_THROWS_WITH(sub_ev0 - ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sub_ev1 - ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sub_ev1 - ev0, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sub_ev2 - ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(sub_ev1 - ev3, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(sub_ev0 - ev2, "Dimensions of LHS(0) and RHS(5) do not match");
+            REQUIRE_THROWS_WITH(sub_ev1 - ev2, "Dimensions of LHS(3) and RHS(5) do not match");
+            REQUIRE_THROWS_WITH(sub_ev1 - ev0, "Dimensions of LHS(3) and RHS(0) do not match");
+            REQUIRE_THROWS_WITH(sub_ev2 - ev1, "Dimensions of LHS(5) and RHS(3) do not match");
+            REQUIRE_THROWS_WITH(sub_ev1 - ev3, "Dimensions of LHS(3) and RHS(2) do not match");
           }
         }
       }
@@ -586,10 +586,10 @@ SCENARIO("Friends test cases") {
         }
         AND_WHEN("We try to do invalid operation") {
           THEN("it should throw an exception") {
-            REQUIRE_THROWS_WITH(ev0 * mul_ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(ev2 * mul_ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(ev1 * mul_ev2, "Dimensions of LHS(X) and RHS(Y) do not match");
-            REQUIRE_THROWS_WITH(ev3 * mul_ev1, "Dimensions of LHS(X) and RHS(Y) do not match");
+            REQUIRE_THROWS_WITH(ev0 * mul_ev1, "Dimensions of LHS(0) and RHS(3) do not match");
+            REQUIRE_THROWS_WITH(ev2 * mul_ev1, "Dimensions of LHS(5) and RHS(3) do not match");
+            REQUIRE_THROWS_WITH(ev1 * mul_ev2, "Dimensions of LHS(3) and RHS(5) do not match");
+            REQUIRE_THROWS_WITH(ev3 * mul_ev1, "Dimensions of LHS(2) and RHS(3) do not match");
           }
         }
       }
