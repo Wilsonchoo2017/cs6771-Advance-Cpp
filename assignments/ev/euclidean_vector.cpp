@@ -19,8 +19,6 @@
  * For dimension that is 0, We construct auto make_unique of(0).
  */
 
-
-
 EuclideanVector::EuclideanVector(int n_dimension, double magnitude) noexcept
   : dimension_{n_dimension} {
   if (dimension_ > 0) {
@@ -88,7 +86,10 @@ double EuclideanVector::operator[](int i) const noexcept {
 
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& v) {
   if (this->dimension_ != v.dimension_) {
-
+     std::ostringstream stream;
+    stream << "Dimensions of LHS(" << this->dimension_ << ") and RHS(" << v.dimension_
+           << ") do not match";
+    throw EuclideanVectorError(stream.str());
   }
   for (int i = 0; i < dimension_; ++i) {
     magnitudes_[i] += v.magnitudes_[i];
@@ -99,7 +100,8 @@ EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& v) {
 EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& v) {
   if (this->dimension_ != v.dimension_) {
     std::ostringstream stream;
-    stream << "Dimensions of LHS(" << this->dimension_ << ") and RHS(" << v.dimension_ << ") do not match";
+    stream << "Dimensions of LHS(" << this->dimension_ << ") and RHS(" << v.dimension_
+           << ") do not match";
     throw EuclideanVectorError(stream.str());
   }
   for (int i = 0; i < dimension_; ++i) {
@@ -144,9 +146,9 @@ EuclideanVector::operator std::list<double>() const noexcept {
 
 double EuclideanVector::at(int i) const {
   if (i < 0 || i >= dimension_) {
-      std::ostringstream stream;
-  stream << "Index " << dimension_ << "is not valid for this EuclideanVector object";
-  throw EuclideanVectorError(stream.str());
+    std::ostringstream stream;
+    stream << "Index " << dimension_ << "is not valid for this EuclideanVector object";
+    throw EuclideanVectorError(stream.str());
   }
   return magnitudes_[i];
 }

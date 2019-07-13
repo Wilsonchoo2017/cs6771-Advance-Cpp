@@ -121,55 +121,55 @@ class EuclideanVector {
   // Dot Product
   friend double operator*(const EuclideanVector& vec1, const EuclideanVector& vec2) {
     if (vec1.dimension_ != vec2.dimension_) {
-        std::ostringstream stream;
-        stream << "Dimensions of LHS(" << vec1.dimension_ << ") and RHS(" << vec2.dimension_
-               << ") do not match";
-        throw EuclideanVectorError(stream.str());
-      }
-      double result = 0;
-      for (int i = 0; i < vec1.dimension_; ++i) {
-        result = result + (vec1.magnitudes_[i] * vec2.magnitudes_[i]);
-      }
-      return result;
+      std::ostringstream stream;
+      stream << "Dimensions of LHS(" << vec1.dimension_ << ") and RHS(" << vec2.dimension_
+             << ") do not match";
+      throw EuclideanVectorError(stream.str());
     }
+    double result = 0;
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      result = result + (vec1.magnitudes_[i] * vec2.magnitudes_[i]);
+    }
+    return result;
+  }
 
-    friend EuclideanVector operator*(const EuclideanVector& vec1, double num) noexcept {
-      std::vector<double> tmp;
-      tmp.reserve(vec1.dimension_);
-      for (int i = 0; i < vec1.dimension_; ++i) {
-        tmp.push_back(vec1.magnitudes_[i] * num);
-      }
-      return EuclideanVector(tmp.begin(), tmp.end());
+  friend EuclideanVector operator*(const EuclideanVector& vec1, double num) noexcept {
+    std::vector<double> tmp;
+    tmp.reserve(vec1.dimension_);
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      tmp.push_back(vec1.magnitudes_[i] * num);
     }
+    return EuclideanVector(tmp.begin(), tmp.end());
+  }
 
-    friend EuclideanVector operator*(double num, const EuclideanVector& vec1) noexcept {
-      return vec1 * num;
-    }
+  friend EuclideanVector operator*(double num, const EuclideanVector& vec1) noexcept {
+    return vec1 * num;
+  }
 
-    friend EuclideanVector operator/(const EuclideanVector& vec1, double num) {
-      if (num == 0) {
-        throw EuclideanVectorError("Invalid vector division by 0");
-      }
-      std::vector<double> tmp;
-      tmp.reserve(vec1.dimension_);
-      for (int i = 0; i < vec1.dimension_; ++i) {
-        tmp.push_back(vec1.magnitudes_[i] / num);
-      }
-      return EuclideanVector(tmp.begin(), tmp.end());
+  friend EuclideanVector operator/(const EuclideanVector& vec1, double num) {
+    if (num == 0) {
+      throw EuclideanVectorError("Invalid vector division by 0");
     }
+    std::vector<double> tmp;
+    tmp.reserve(vec1.dimension_);
+    for (int i = 0; i < vec1.dimension_; ++i) {
+      tmp.push_back(vec1.magnitudes_[i] / num);
+    }
+    return EuclideanVector(tmp.begin(), tmp.end());
+  }
 
-    friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
-      os << '[';
-      for (int i = 0; i < v.dimension_; i++) {
-        if (i == 0) {
-          os << v.magnitudes_[i];
-        } else {
-          os << ' ' << v.magnitudes_[i];
-        }
+  friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
+    os << '[';
+    for (int i = 0; i < v.dimension_; i++) {
+      if (i == 0) {
+        os << v.magnitudes_[i];
+      } else {
+        os << ' ' << v.magnitudes_[i];
       }
-      os << ']';
-      return os;
     }
-  };
+    os << ']';
+    return os;
+  }
+};
 
 #endif  // ASSIGNMENTS_EV_EUCLIDEAN_VECTOR_H_
