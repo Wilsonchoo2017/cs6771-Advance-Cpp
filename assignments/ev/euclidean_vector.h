@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef ASSIGNMENTS_EV_EUCLIDEAN_VECTOR_H_
 #define ASSIGNMENTS_EV_EUCLIDEAN_VECTOR_H_
 
@@ -19,13 +20,6 @@ class EuclideanVectorError : public std::exception {
  public:
   explicit EuclideanVectorError(const std::string&& what) : what_(what) {}
   const char* what() const noexcept override { return what_.c_str(); }
-
- private:
-  std::string what_;
-};
-
-class EuclideanVector {
- public:
   // Constructors
   explicit EuclideanVector(int i = 1) noexcept : EuclideanVector{i, 0.0} {};
   EuclideanVector(int n_dimension, double magnitude) noexcept;
@@ -173,3 +167,4 @@ class EuclideanVector {
 };
 
 #endif  // ASSIGNMENTS_EV_EUCLIDEAN_VECTOR_H_
+
