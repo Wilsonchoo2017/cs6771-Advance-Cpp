@@ -1,4 +1,5 @@
 .clwb/
 bazel-*
 .vscode/
+.idea
 compile_commands.json
